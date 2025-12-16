@@ -20,10 +20,23 @@ const LoginForm = () => {
         setStatus('loading');
         setMessage('');
 
-        const VALID_USER = "a.ansarhussain2004@gmail.com";
-        const VALID_PASS = "Ansar#123";
+        // Array of valid users - Add new users here
+        const VALID_USERS = [
+            { username: "a.ansarhussain2004@gmail.com", password: "93441226" },
+            { username: "ajmal@gmail.com", password: "7092983982" },
+            { username: "arshad@gmail.com", password: "7092983986" },
 
-        if (formData.Username !== VALID_USER || formData.Password !== VALID_PASS) {
+            // Add more users below:
+            // { username: "user2@example.com", password: "Password123" },
+            // { username: "user3@example.com", password: "SecurePass456" },
+        ];
+
+        // Check if credentials match any valid user
+        const validUser = VALID_USERS.find(
+            user => user.username === formData.Username && user.password === formData.Password
+        );
+
+        if (!validUser) {
             setStatus('error');
             setMessage('Invalid username or password');
             return;

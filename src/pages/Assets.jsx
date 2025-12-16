@@ -143,7 +143,7 @@ const Assets = () => {
                 </button>
             </div>
 
-            <div className="assets-content">
+            <div className={`assets-content ${activeTab === 'view' ? 'full-width' : ''}`}>
                 {activeTab === 'add' && (
                     <div className="tab-panel">
                         <form onSubmit={handleAddStock} className="stock-form">
@@ -228,6 +228,9 @@ const Assets = () => {
 
                 {activeTab === 'view' && (
                     <div className="tab-panel">
+                        <div className="total-stats">
+                            <h2>Total Available Sheets: {inventory.reduce((sum, item) => sum + (parseInt(item.available) || 0), 0)}</h2>
+                        </div>
                         <div className="inventory-grid">
                             {inventory.length === 0 ? (
                                 <p className="empty-state">No stock data available. Add stock to get started.</p>
