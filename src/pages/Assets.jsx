@@ -229,7 +229,7 @@ const Assets = () => {
                 {activeTab === 'view' && (
                     <div className="tab-panel">
                         <div className="total-stats">
-                            <h2>Total Available Sheets: {inventory.reduce((sum, item) => sum + (parseInt(item.available) || 0), 0)}</h2>
+                            <h2>Total Available Sheets: {inventory.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0)}</h2>
                         </div>
                         <div className="inventory-grid">
                             {inventory.length === 0 ? (
@@ -245,9 +245,9 @@ const Assets = () => {
                                                 </div>
                                             )}
                                             <h3>{item.color}</h3>
-                                            <p className="stock-count">{item.available} sheets</p>
-                                            <span className={`status ${item.available < 10 ? 'low' : 'good'}`}>
-                                                {item.available < 10 ? 'Low Stock' : 'In Stock'}
+                                            <p className="stock-count">{item.quantity} sheets</p>
+                                            <span className={`status ${item.quantity < 10 ? 'low' : 'good'}`}>
+                                                {item.quantity < 10 ? 'Low Stock' : 'In Stock'}
                                             </span>
                                         </div>
                                     );

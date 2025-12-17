@@ -252,13 +252,12 @@ function getAttendance(doc, params) {
             }
         }
 
-        // FAILSAFE: Force include all for debugging if nothing was selected matching
-        // Or simply remove the else/if logic above if you want PERMANENT bypass.
-        // For now, let's keep the logic but fallback to TRUE if the user requests it? 
-        // No, let's just TRUST the dates I'm sending.
-        // Wait - the log says "No attendance records found".
-        // Let's make "include = true" by default to see raw data.
-        include = true;
+        // If no filters are provided, do we return everything? 
+        // Typically yes, or maybe limit to recent? 
+        // Let's default to FALSE if specific filters are expected, but for now allow ALL if no filter?
+        // Actually, the API seems to always send startDate/endDate. 
+        // If someone calls it without params, let's return everything (uncomment below if desired).
+        // if (!startDate && !endDate && !month) include = true;
 
         if (include) {
             try {
