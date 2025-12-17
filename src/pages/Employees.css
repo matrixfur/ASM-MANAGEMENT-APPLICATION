@@ -1,0 +1,319 @@
+.employees-container {
+    width: 100vw;
+    min-height: 100vh;
+    padding: 0;
+}
+
+.employees-header {
+    margin-bottom: 2rem;
+    padding: 2rem 2rem 0 2rem;
+}
+
+.employees-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: #fff;
+}
+
+.employees-header p {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.employees-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding: 0 2rem;
+}
+
+.employees-content {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    padding: 0 2rem 2rem 2rem;
+}
+
+.employees-content.full-width {
+    max-width: 100%;
+}
+
+.employee-card {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: center;
+    text-align: center;
+}
+
+.employee-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+    border: 3px solid var(--primary-color);
+}
+
+.employee-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.employee-card h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.role {
+    margin: 0;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.employee-details {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.8rem;
+    border-radius: 8px;
+    margin: 0.5rem 0;
+}
+
+.employee-details p {
+    margin: 0.3rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.employee-details strong {
+    color: #fff;
+}
+
+.delete-btn {
+    width: 100%;
+    padding: 0.6rem;
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.delete-btn:hover {
+    background: #ef4444;
+    color: #fff;
+}
+
+.photo-preview {
+    margin-top: 1rem;
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid var(--border-color);
+}
+
+.photo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.file-input {
+    color: var(--text-secondary);
+}
+
+.salary-table-container {
+    margin-top: 2rem;
+    overflow-x: auto;
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.salary-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #fff;
+}
+
+.salary-table th,
+.salary-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.salary-table th {
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.salary-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.emp-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.table-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-color);
+}
+
+.total-cell {
+    color: #4ade80;
+    font-weight: 600;
+}
+
+.employee-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.attendance-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.attendance-item {
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--border-color);
+}
+
+.attendance-item h4 {
+    margin: 0;
+    color: #fff;
+}
+
+.attendance-controls button {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 0.5rem;
+    transition: all 0.2s;
+}
+
+.attendance-controls button.present {
+    background: rgba(34, 197, 94, 0.1);
+    color: #4ade80;
+    border: 1px solid #4ade80;
+}
+
+.attendance-controls button.present.active {
+    background: #22c55e;
+    color: #fff;
+}
+
+.attendance-controls button.absent {
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    border: 1px solid #f87171;
+}
+
+.attendance-controls button.absent.active {
+    background: #ef4444;
+    color: #fff;
+}
+
+.date-picker {
+    margin-bottom: 1.5rem;
+}
+
+.date-picker input {
+    padding: 0.8rem;
+    border-radius: 8px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: #fff;
+    font-family: inherit;
+}
+
+/* Shift Selection Styles */
+.attendance-controls.shift-controls {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.shift-btn {
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+}
+
+.shift-btn:hover {
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+}
+
+.shift-btn.active {
+    border-color: transparent;
+    color: #fff;
+    font-weight: 600;
+}
+
+.shift-btn.full.active {
+    background: #22c55e;
+    /* Green */
+}
+
+.shift-btn.half.active {
+    background: #f59e0b;
+    /* Amber */
+}
+
+.shift-btn.one-half.active {
+    background: #8b5cf6;
+    /* Violet */
+}
+
+.shift-btn.double.active {
+    background: #ec4899;
+    /* Pink */
+}
+
+.shift-btn.triple.active {
+    background: #3b82f6;
+    /* Blue */
+}
+
+.shift-btn.absent.active {
+    background: #ef4444;
+    /* Red */
+}

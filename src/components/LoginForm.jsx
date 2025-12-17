@@ -51,7 +51,7 @@ const LoginForm = () => {
         } catch (error) {
             console.error('Login Error:', error);
             setStatus('error');
-            setMessage('Failed to submit. Check console/network.');
+            setMessage(`Login Failed: ${error.message}`);
         }
     };
 

@@ -30,6 +30,14 @@ const Dashboard = () => {
                             <p>Manage plywood stock inventory</p>
                         </div>
                     </button>
+
+                    <button className="action-btn" onClick={() => navigate('/employees')}>
+                        <span className="btn-icon">👥</span>
+                        <div>
+                            <h3>Employees Management</h3>
+                            <p>Manage staff, attendance and payroll</p>
+                        </div>
+                    </button>
                 </div>
 
 

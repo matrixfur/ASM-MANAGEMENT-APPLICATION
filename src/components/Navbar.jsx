@@ -32,6 +32,12 @@ const Navbar = () => {
                     >
                         Assets Management
                     </button>
+                    <button
+                        className={`nav-link ${location.pathname === '/employees' ? 'active' : ''}`}
+                        onClick={() => navigate('/employees')}
+                    >
+                        Employees
+                    </button>
                 </div>
 
                 <button className="logout-btn" onClick={handleLogout}>
