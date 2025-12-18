@@ -15,18 +15,48 @@ const AddColorModal = ({ isOpen, onClose, onAdd }) => {
                 return;
             }
 
-            // Validate file size (max 500KB)
-            if (file.size > 500000) {
-                alert('Image size should be less than 500KB');
-                return;
-            }
-
-            setImageFile(file);
-
-            // Create preview
+            // Create preview and compress
             const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+
+                    // Resize to max 150px (thumbnail size)
+                    // This ensures the base64 string stays under Google Sheets 50k char limit
+                    const MAX_SIZE = 150;
+                    if (width > height) {
+                        if (width > MAX_SIZE) {
+                            height *= MAX_SIZE / width;
+                            width = MAX_SIZE;
+                        }
+                    } else {
+                        if (height > MAX_SIZE) {
+                            width *= MAX_SIZE / height;
+                            height = MAX_SIZE;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Compress to JPEG 0.7 quality
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+
+                    // Check size limit (approx 37KB safety margin for 50k chars)
+                    if (dataUrl.length > 45000) {
+                        alert('Image is too complex. Please choose a simpler image.');
+                        return;
+                    }
+
+                    setImagePreview(dataUrl);
+                    setImageFile(file); // Keep just in case, though unused in submit
+                };
+                img.src = event.target.result;
             };
             reader.readAsDataURL(file);
         }
@@ -66,8 +96,8 @@ const AddColorModal = ({ isOpen, onClose, onAdd }) => {
                             type="text"
                             id="colorName"
                             value={colorName}
-                            onChange={(e) => setColorName(e.target.value)}
-                            placeholder="e.g., Walnut Brown, Oak White"
+                            onChange={(e) => setColorName(e.target.value.toUpperCase())}
+                            placeholder="e.g., WALNUT BROWN"
                             autoFocus
                             required
                         />

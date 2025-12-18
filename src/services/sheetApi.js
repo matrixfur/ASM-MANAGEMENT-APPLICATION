@@ -134,7 +134,11 @@ export const addColor = async (colorName, imageData) => {
         throw new Error('Failed to add color');
     }
 
-    return await response.json();
+    const result = await response.json();
+    if (result.result === 'error') {
+        throw new Error(typeof result.error === 'object' ? JSON.stringify(result.error) : result.error);
+    }
+    return result;
 };
 
 // Get all colors
@@ -154,6 +158,33 @@ export const getColors = async () => {
 
     const result = await response.json();
     return result.colors || [];
+};
+
+// Delete color
+export const deleteColor = async (colorName) => {
+    const url = import.meta.env.VITE_GOOGLE_SHEET_URL;
+    if (!url) {
+        throw new Error('Google Sheet URL is not configured.');
+    }
+
+    const formBody = new FormData();
+    formBody.append('action', 'deleteColor');
+    formBody.append('colorName', colorName);
+
+    const response = await fetch(url, {
+        method: 'POST',
+        body: formBody,
+    });
+
+    if (!response.ok) {
+        throw new Error('Failed to delete color');
+    }
+
+    const result = await response.json();
+    if (result.result === 'error') {
+        throw new Error(typeof result.error === 'object' ? JSON.stringify(result.error) : result.error);
+    }
+    return result;
 };
 
 // --- Employees Management ---

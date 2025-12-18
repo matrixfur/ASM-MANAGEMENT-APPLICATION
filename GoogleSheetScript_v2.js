@@ -72,6 +72,8 @@ function handleRequest(e) {
             return getColors(doc);
         } else if (action === "addColor") {
             return addColor(doc, e.parameter);
+        } else if (action === "deleteColor") {
+            return deleteColor(doc, e.parameter);
 
             // 3. EMPLOYEE ACTIONS
         } else if (action === "getEmployees") {
@@ -169,6 +171,29 @@ function addColor(doc, params) {
     }
     sheet.appendRow([params.colorName, params.imageData]);
     return jsonResponse({ "result": "success" });
+}
+
+function deleteColor(doc, params) {
+    var sheet = doc.getSheetByName("Colors");
+    if (!sheet) return jsonResponse({ "error": "Colors sheet not found" });
+
+    var colorName = params.colorName;
+    var rows = sheet.getDataRange().getValues();
+
+    // Loop through rows to find the color
+    for (var i = 1; i < rows.length; i++) {
+        if (String(rows[i][0]).toLowerCase() === String(colorName).toLowerCase()) {
+            sheet.deleteRow(i + 1); // Delete the row (1-indexed)
+
+            // Also optionally delete associated inventory?
+            // For now, just delete the color definition as requested.
+            // If strict integrity is needed, we should also clear inventory checks, 
+            // but usually this is enough.
+
+            return jsonResponse({ "result": "success" });
+        }
+    }
+    return jsonResponse({ "error": "Color not found" });
 }
 
 

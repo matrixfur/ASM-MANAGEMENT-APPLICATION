@@ -32,9 +32,10 @@ const Assets = () => {
     const loadColors = async () => {
         try {
             const fetchedColors = await sheetApi.getColors();
-            if (fetchedColors.length > 0) {
+            if (Array.isArray(fetchedColors) && fetchedColors.length > 0) {
                 setColors(fetchedColors);
             } else {
+                console.log('No colors found, initializing defaults...');
                 // Initialize default colors and save them to Google Sheets
                 const defaultColors = [
                     { name: 'Walnut Brown', image: null },
@@ -111,6 +112,20 @@ const Assets = () => {
         } catch (error) {
             console.error('Error recording usage:', error);
             alert('Failed to record usage. Please try again.');
+        }
+    };
+
+    const handleDeleteColor = async (colorName) => {
+        if (window.confirm(`Are you sure you want to delete the color "${colorName}"? This will remove all associated stock data.`)) {
+            try {
+                await sheetApi.deleteColor(colorName);
+                await loadColors();
+                await loadInventory();
+                alert('Color deleted successfully!');
+            } catch (error) {
+                console.error('Error deleting color:', error);
+                alert('Failed to delete color. Please try again.');
+            }
         }
     };
 
@@ -236,7 +251,8 @@ const Assets = () => {
                                 <p className="empty-state">No stock data available. Add stock to get started.</p>
                             ) : (
                                 inventory.map(item => {
-                                    const colorData = colors.find(c => c.name === item.color);
+                                    const colorMatches = colors.filter(c => String(c.name).trim().toLowerCase() === String(item.color).trim().toLowerCase());
+                                    const colorData = colorMatches.find(c => c.image) || colorMatches[0];
                                     return (
                                         <div key={item.color} className="inventory-card">
                                             {colorData?.image && (
@@ -249,6 +265,13 @@ const Assets = () => {
                                             <span className={`status ${item.quantity < 10 ? 'low' : 'good'}`}>
                                                 {item.quantity < 10 ? 'Low Stock' : 'In Stock'}
                                             </span>
+                                            <button
+                                                className="delete-color-btn"
+                                                onClick={() => handleDeleteColor(item.color)}
+                                                title="Delete Color"
+                                            >
+                                                🗑️
+                                            </button>
                                         </div>
                                     );
                                 })

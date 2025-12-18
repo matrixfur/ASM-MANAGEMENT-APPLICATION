@@ -159,9 +159,9 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1.5rem;
-    max-height: calc(100vh - 300px);
-    overflow-y: auto;
-    padding-right: 10px;
+    /* max-height removed to allow page scroll */
+    /* overflow-y: auto; removed */
+    padding-bottom: 2rem;
 }
 
 .inventory-card {
@@ -169,6 +169,36 @@
     padding: 1.5rem;
     border-radius: 12px;
     border: 1px solid var(--border-color);
+    position: relative;
+    /* For absolute positioning of delete button */
+}
+
+.delete-color-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(239, 68, 68, 0.1);
+    /* Red tint */
+    color: #ef4444;
+    /* Red color */
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0.7;
+}
+
+.delete-color-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    opacity: 1;
+    transform: scale(1.1);
 }
 
 .color-image {

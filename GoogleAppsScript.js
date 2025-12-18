@@ -38,6 +38,8 @@ function handleRequest(e) {
             return getColors(doc);
         } else if (action === "addColor") {
             return addColor(doc, e.parameter);
+        } else if (action === "deleteColor") {
+            return deleteColor(doc, e.parameter);
 
             // 2. EMPLOYEE ACTIONS
         } else if (action === "getEmployees") {
@@ -98,6 +100,41 @@ function getInventory(doc) {
 }
 // (Include addStock, useStock, etc. here as they were)
 
+
+
+function deleteColor(doc, params) {
+    var colorName = params.colorName;
+    var result = { "result": "success", "deletedFrom": [] };
+
+    // 1. Delete from Colors sheet
+    var colorSheet = doc.getSheetByName("Colors");
+    if (colorSheet) {
+        var rows = colorSheet.getDataRange().getValues();
+        for (var i = 1; i < rows.length; i++) {
+            if (String(rows[i][0]).toLowerCase() === String(colorName).toLowerCase()) {
+                colorSheet.deleteRow(i + 1);
+                result.deletedFrom.push("Colors");
+                break; // Assuming unique names
+            }
+        }
+    }
+
+    // 2. Delete from Inventory sheet
+    var invSheet = doc.getSheetByName("Inventory");
+    if (invSheet) {
+        var rows = invSheet.getDataRange().getValues();
+        // Iterate backwards to avoid index shifting issues when deleting multiple
+        for (var i = rows.length - 1; i >= 1; i--) {
+            if (String(rows[i][0]).toLowerCase() === String(colorName).toLowerCase()) {
+                invSheet.deleteRow(i + 1);
+                // We don't break here just in case multiple entries exist (though usage logic usually merges them)
+            }
+        }
+        result.deletedFrom.push("Inventory");
+    }
+
+    return jsonResponse(result);
+}
 
 // --- NEW EMPLOYEE FUNCTIONS ---
 
