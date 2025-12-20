@@ -78,29 +78,88 @@ function handleRequest(e) {
 
 // --- HELPER FUNCTIONS ---
 
-// ... (Existing Inventory functions: getInventory, addStock, useStock, getColors, addColor) ...
-// NOTE: Ensure you keep your existing inventory functions here. 
-// I will just provide the NEW Employee ones below.
+// --- INVENTORY FUNCTIONS ---
 
 function getInventory(doc) {
     var sheet = doc.getSheetByName("Inventory");
     if (!sheet) return jsonResponse({ "inventory": [] });
     var rows = sheet.getDataRange().getValues();
-    var headers = rows[0];
-    var data = [];
+
+    // Aggregate stock by color
+    var stockMap = {};
+
+    // Start from 1 to skip header
     for (var i = 1; i < rows.length; i++) {
         var row = rows[i];
-        var obj = {};
-        for (var j = 0; j < headers.length; j++) {
-            obj[headers[j]] = row[j];
+        var color = String(row[0]).trim(); // Normalize color name
+        // Ensure quantity is treated as number (handle "-5" etc)
+        var quantity = parseFloat(row[1]);
+        if (isNaN(quantity)) quantity = 0;
+
+        if (!stockMap[color]) {
+            stockMap[color] = 0;
         }
-        data.push(obj);
+        stockMap[color] += quantity;
     }
+
+    var data = [];
+    for (var color in stockMap) {
+        data.push({
+            "color": color,
+            "quantity": stockMap[color]
+        });
+    }
+
     return jsonResponse({ "inventory": data });
 }
-// (Include addStock, useStock, etc. here as they were)
 
+function addStock(doc, params) {
+    var sheet = doc.getSheetByName("Inventory");
+    if (!sheet) {
+        sheet = doc.insertSheet("Inventory");
+        sheet.appendRow(["color", "quantity", "notes", "timestamp"]);
+    }
+    // Append positive quantity
+    sheet.appendRow([params.color, params.quantity, params.notes, new Date()]);
+    return jsonResponse({ "result": "success" });
+}
 
+function useStock(doc, params) {
+    var sheet = doc.getSheetByName("Inventory");
+    if (!sheet) {
+        return jsonResponse({ "error": "Inventory sheet not found" });
+    }
+    // Append negative quantity for usage
+    // Ensure we store it as a number or string that parseFloat can read
+    var qty = params.quantity;
+    var negQty = (typeof qty === 'number') ? -qty : "-" + qty;
+
+    sheet.appendRow([params.color, negQty, "Used", new Date()]);
+    return jsonResponse({ "result": "success" });
+}
+
+function getColors(doc) {
+    var sheet = doc.getSheetByName("Colors");
+    if (!sheet) return jsonResponse({ "colors": [] });
+    var rows = sheet.getDataRange().getValues();
+    var colors = [];
+    if (rows.length > 1) {
+        for (var i = 1; i < rows.length; i++) {
+            colors.push({ name: rows[i][0], image: rows[i][1] });
+        }
+    }
+    return jsonResponse({ "colors": colors });
+}
+
+function addColor(doc, params) {
+    var sheet = doc.getSheetByName("Colors");
+    if (!sheet) {
+        sheet = doc.insertSheet("Colors");
+        sheet.appendRow(["name", "image"]);
+    }
+    sheet.appendRow([params.colorName, params.imageData]);
+    return jsonResponse({ "result": "success" });
+}
 
 function deleteColor(doc, params) {
     var colorName = params.colorName;
@@ -114,20 +173,25 @@ function deleteColor(doc, params) {
             if (String(rows[i][0]).toLowerCase() === String(colorName).toLowerCase()) {
                 colorSheet.deleteRow(i + 1);
                 result.deletedFrom.push("Colors");
-                break; // Assuming unique names
+                break;
             }
         }
     }
 
-    // 2. Delete from Inventory sheet
+    // 2. Delete from Inventory sheet (Optional: Remove this if you want to keep history)
+    // For "Available Stock" calculation, if we delete the color master, 
+    // the inventory rows might still exist but getInventory aggregates them.
+    // However, if the user "Deletes" a color, they likely want it gone from the dashboard.
+    // getInventory iterates distinct colors found in Inventory sheet.
+    // So if we don't delete from Inventory, it might still show up if it has stock.
+    // Let's keep the logic to remove from Inventory as well to be clean.
     var invSheet = doc.getSheetByName("Inventory");
     if (invSheet) {
         var rows = invSheet.getDataRange().getValues();
-        // Iterate backwards to avoid index shifting issues when deleting multiple
+        // Iterate backwards
         for (var i = rows.length - 1; i >= 1; i--) {
             if (String(rows[i][0]).toLowerCase() === String(colorName).toLowerCase()) {
                 invSheet.deleteRow(i + 1);
-                // We don't break here just in case multiple entries exist (though usage logic usually merges them)
             }
         }
         result.deletedFrom.push("Inventory");
